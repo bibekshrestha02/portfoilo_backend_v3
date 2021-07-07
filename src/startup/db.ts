@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-function db() {
+function run() {
   let db: string;
   if (process.env.NODE_ENV === 'development') {
     db = process.env.mongo_local as string;
@@ -15,4 +15,4 @@ function db() {
     .then(() => console.log('connected to database'))
     .catch((err) => console.log(err));
 }
-export default db;
+export default run;
