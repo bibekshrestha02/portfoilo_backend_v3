@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-function run() {
+const run = () => {
   let db: string;
   if (process.env.NODE_ENV === 'development') {
     db = process.env.mongo_local as string;
@@ -14,5 +14,18 @@ function run() {
     })
     .then(() => console.log('connected to database'))
     .catch((err) => console.log(err));
-}
+};
+
+export const testRun = () => {
+  let db: string = process.env.mongo_local_test as string;
+
+  mongoose
+    .connect(db, {
+      useCreateIndex: true,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then(() => console.log('connected to database'))
+    .catch((err) => console.log(err));
+};
 export default run;
