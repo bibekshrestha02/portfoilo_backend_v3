@@ -3,30 +3,41 @@ import { Schema, model } from 'mongoose';
 const userSchema = new Schema({
   name: {
     type: String,
+    default: '',
+  },
+  isCreate: {
+    type: String,
   },
   title: {
     type: String,
+    default: '',
   },
   profileImagePath: {
     type: String,
+    default: '',
   },
   about: {
     title: {
       type: String,
+      default: '',
     },
     subTitle: {
       type: String,
+      default: '',
     },
     cvPath: {
       type: String,
+      default: '',
     },
     description: {
       type: String,
+      default: '',
     },
   },
   education: {
     title: {
       type: String,
+      default: '',
     },
     data: {
       type: [Schema.Types.ObjectId],
@@ -36,6 +47,7 @@ const userSchema = new Schema({
   project: {
     title: {
       type: String,
+      default: '',
     },
     data: {
       type: [Schema.Types.ObjectId],
@@ -45,6 +57,7 @@ const userSchema = new Schema({
   skill: {
     title: {
       type: String,
+      default: '',
     },
     data: {
       type: [Schema.Types.ObjectId],
@@ -54,20 +67,23 @@ const userSchema = new Schema({
   contact: {
     title: {
       type: String,
+      default: '',
     },
     detail: {
       type: String,
     },
     subDetail: {
       type: String,
+      default: '',
     },
     email: {
       type: String,
+      default: '',
     },
   },
   socialLinks: {
     type: [Schema.Types.ObjectId],
-    ref: 'SocailLink',
+    ref: 'SocialLink',
   },
 });
 
