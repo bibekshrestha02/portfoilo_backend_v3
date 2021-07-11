@@ -25,7 +25,7 @@ export const testRun = () => {
       useCreateIndex: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useFindAndModify: true,
+      useFindAndModify: false,
     })
     .then(() => console.log('connected to database'))
     .catch((err) => console.log(err));
