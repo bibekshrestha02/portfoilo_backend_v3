@@ -34,5 +34,6 @@ export async function getInital(
     res.json({ ...user, colors });
   } catch (error) {
     console.log(error);
+    res.status(400).send(error);
   }
 }

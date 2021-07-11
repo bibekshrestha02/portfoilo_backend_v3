@@ -10,11 +10,12 @@ describe('Inital Route: /api/v1/', () => {
   });
   afterEach(async () => {
     await UserModel.deleteMany({});
+    await SocialLinkModel.deleteMany({});
   });
   afterAll(async () => {
     await mongoose.connection.close();
   });
-  describe('Inital Route: /api/v1/', () => {
+  describe('Inital Route: GET: /api/v1/', () => {
     const exec = () => {
       return Request(app).get('/api/v1/');
     };

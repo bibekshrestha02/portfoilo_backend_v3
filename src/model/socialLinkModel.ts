@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-export const socialLinkSchema = new Schema({
+const socialLinkSchema = new Schema({
   name: {
     type: String,
   },
