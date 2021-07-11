@@ -4,6 +4,7 @@ import { testRun } from '../../../startup/db';
 import { connection } from 'mongoose';
 import SocialLinkModel from '../../../model/socialLinkModel';
 import UsersModel from '../../../model/usersModel';
+import UserModel from '../../../model/usersModel';
 describe('Route /api/v1/socialLink/', () => {
   beforeAll(async () => {
     await testRun();
@@ -135,7 +136,6 @@ describe('Route /api/v1/socialLink/', () => {
       name = 'GitHub';
       await exec();
       const result = await SocialLinkModel.findOne({ name: name }).lean();
-      console.log(result);
       expect(result).not.toBeNull();
     });
 
@@ -149,6 +149,53 @@ describe('Route /api/v1/socialLink/', () => {
 
     it('should return status 200 if all data is correct', async () => {
       const res = await exec();
+      expect(res.status).toBe(200);
+    });
+  });
+
+  describe('Delete /api/v1/socialLink/:id', () => {
+    let id: String;
+
+    beforeEach(async () => {
+      let socialLink = new SocialLinkModel({
+        name: 'facebook',
+        iconPath: 'iconPath.com',
+        link: 'Facebook.com',
+      });
+      id = socialLink._id;
+      await UserModel.create({});
+      await socialLink.save();
+      await UsersModel.findOneAndUpdate({}, { $push: { socialLinks: id } });
+    });
+
+    function exec() {
+      return request(app).delete(`/api/v1/socialLink/${id}`);
+    }
+
+    describe('Validate Id', () => {
+      it('should return status 400 if id is invalid', async () => {
+        id = 'asdfasdf';
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
+      it('should return status 400 if id data is not found', async () => {
+        await SocialLinkModel.findByIdAndDelete(id);
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
+    });
+    it('should remove id value from UserModel', async () => {
+      await exec();
+      const result = await UsersModel.findOne({
+        socialLinks: [id],
+      });
+      expect(result).toBeNull();
+    });
+
+    it('should delete socialLink and send status 200', async () => {
+      const res = await exec();
+      const result = await SocialLinkModel.findById(id).lean();
+      expect(result).toBeNull();
       expect(res.status).toBe(200);
     });
   });
