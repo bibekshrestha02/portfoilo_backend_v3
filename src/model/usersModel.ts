@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import socialLinkModel from './socialLinkModel';
+import * as yup from 'yup';
 const userSchema = new Schema({
   name: {
     type: String,
@@ -88,4 +89,12 @@ const userSchema = new Schema({
 });
 
 const UserModel = model('User', userSchema);
+export const validateName = yup.object({
+  name: yup.string().required(),
+  title: yup.string().required(),
+});
+
+export const validateProfileImagePath = yup.object({
+  profileImagePath: yup.string().required(),
+});
 export default UserModel;

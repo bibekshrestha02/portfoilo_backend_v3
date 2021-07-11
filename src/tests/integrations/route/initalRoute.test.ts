@@ -15,7 +15,7 @@ describe('Inital Route: /api/v1/', () => {
   afterAll(async () => {
     await mongoose.connection.close();
   });
-  describe('Inital Route: GET: /api/v1/', () => {
+  describe(' GET: /api/v1/', () => {
     const exec = () => {
       return Request(app).get('/api/v1/');
     };
@@ -67,6 +67,69 @@ describe('Inital Route: /api/v1/', () => {
       const res = await exec();
 
       fields.forEach((filed) => expect(res.body).toHaveProperty(filed));
+    });
+  });
+
+  describe('Put: /api/v1/name', () => {
+    let name: string, title: string;
+    beforeEach(async () => {
+      await UserModel.create({});
+    });
+    beforeEach(() => {
+      name = 'Bibek Shrestha';
+      title = 'MERN Stack Developer';
+    });
+    function exec() {
+      return Request(app).put('/api/v1/name').send({ name, title });
+    }
+    describe('validate name and tile', () => {
+      it('should return status 400 if name  is not send', async () => {
+        name = '';
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
+      it('should return status 400 if title  is not send', async () => {
+        title = '';
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
+    });
+    it('should save and send status response 200 with title and name ', async () => {
+      const res = await exec();
+      const result = await UserModel.findOne({ name: name, title: title });
+      expect(result).not.toBeNull();
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('name');
+      expect(res.body).toHaveProperty('title');
+    });
+  });
+
+  describe('Put: /api/v1/profileImage', () => {
+    let profileImagePath: string;
+    beforeEach(async () => {
+      await UserModel.create({});
+    });
+    beforeEach(() => {
+      profileImagePath = 'https://bbks.com/profile';
+    });
+    function exec() {
+      return Request(app)
+        .put('/api/v1/profileImage')
+        .send({ profileImagePath });
+    }
+    describe('Validate ProfileImagePath', () => {
+      it('should return status 400 if profileImagePath  is not send', async () => {
+        profileImagePath = '';
+        const res = await exec();
+        expect(res.status).toBe(400);
+      });
+    });
+    it('should save and send status response 200 with profileImagePath ', async () => {
+      const res = await exec();
+      const result = await UserModel.findOne({ profileImagePath });
+      expect(result).not.toBeNull();
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('profileImagePath');
     });
   });
 });
