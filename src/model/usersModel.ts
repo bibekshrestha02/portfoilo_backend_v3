@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-
+import socialLinkModel from './socialLinkModel';
 const userSchema = new Schema({
   name: {
     type: String,
@@ -83,7 +83,7 @@ const userSchema = new Schema({
   },
   socialLinks: {
     type: [Schema.Types.ObjectId],
-    ref: 'SocialLink',
+    ref: socialLinkModel,
   },
 });
 
