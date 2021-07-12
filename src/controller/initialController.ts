@@ -48,8 +48,17 @@ export async function updateName(
   try {
     await validateName.validate(req.body);
     const { name, title } = req.body;
-    let result = new UserModel({ name, title });
-    result = await result.save();
+    let result = await UserModel.findOneAndUpdate(
+      {},
+      {
+        name,
+        title,
+      },
+      { new: true }
+    )
+      .select('name title')
+      .lean();
+
     res.status(200).json(result);
   } catch (error) {
     res.status(400).send(error);
@@ -63,8 +72,14 @@ export async function updateProfileImagePath(
 ) {
   try {
     await validateProfileImagePath.validate(req.body);
-    let result = new UserModel({ profileImagePath: req.body.profileImagePath });
-    result = await result.save();
+
+    let result = await UserModel.findOneAndUpdate(
+      {},
+      { profileImagePath: req.body.profileImagePath },
+      { new: true }
+    )
+      .select('profileImagePath')
+      .lean();
     res.status(200).json(result);
   } catch (error) {
     res.status(400).send(error);
