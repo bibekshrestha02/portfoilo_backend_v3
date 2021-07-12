@@ -119,3 +119,8 @@ export const validateContact = yup.object({
   subDetail: yup.string().required(),
   email: yup.string().email().required(),
 });
+
+// Edit title
+export const validateTitle = yup.object({
+  title: yup.string().required(),
+});
