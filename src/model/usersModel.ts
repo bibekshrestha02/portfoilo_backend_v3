@@ -89,12 +89,24 @@ const userSchema = new Schema({
 });
 
 const UserModel = model('User', userSchema);
+
+export default UserModel;
+
+// name validation
 export const validateName = yup.object({
   name: yup.string().required(),
   title: yup.string().required(),
 });
 
+// profileImagePath Validation
 export const validateProfileImagePath = yup.object({
   profileImagePath: yup.string().required(),
 });
-export default UserModel;
+
+// About fields Validation
+export const validateAbout = yup.object({
+  title: yup.string().required(),
+  subTitle: yup.string().required(),
+  cvPath: yup.string().required(),
+  description: yup.string().required(),
+});
