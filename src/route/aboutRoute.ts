@@ -1,6 +1,8 @@
 import { Router } from 'express';
-import { editAbout } from '../controller/aboutController';
+import { editAbout, getAbout } from '../controller/aboutController';
 const Route = Router();
+
+Route.get('/', getAbout);
 
 Route.put('/', editAbout);
 

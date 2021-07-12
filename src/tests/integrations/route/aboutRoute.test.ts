@@ -13,7 +13,7 @@ describe('About Route', () => {
   afterEach(async () => await UserModel.deleteOne({}));
   afterAll(async () => connection.close());
 
-  describe('PUT /api/v1/about', () => {
+  describe('PUT: /api/v1/about', () => {
     let title: string, subTitle: string, cvPath: string, description: string;
     beforeEach(() => {
       title = "Hellow, I'm Bibek";
@@ -54,6 +54,19 @@ describe('About Route', () => {
       const result = await UserModel.findOne({ 'about.title': title });
 
       expect(result).not.toBeNull();
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('title');
+      expect(res.body).toHaveProperty('subTitle');
+      expect(res.body).toHaveProperty('cvPath');
+      expect(res.body).toHaveProperty('description');
+    });
+  });
+
+  describe('GET: /api/v1/about', () => {
+    const exec = () => request(app).get('/api/v1/about');
+
+    it('should send status 200 and response contain fields title, subTitle, cvPath, description', async () => {
+      const res = await exec();
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty('title');
       expect(res.body).toHaveProperty('subTitle');

@@ -29,3 +29,16 @@ export const editAbout = async (
     res.status(400).send(error);
   }
 };
+
+export const getAbout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const result = await UserModel.findOne({}).select('about').lean();
+    res.status(200).json(result.about);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
