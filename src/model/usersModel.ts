@@ -72,6 +72,7 @@ const userSchema = new Schema({
     },
     detail: {
       type: String,
+      default: '',
     },
     subDetail: {
       type: String,
@@ -109,4 +110,12 @@ export const validateAbout = yup.object({
   subTitle: yup.string().required(),
   cvPath: yup.string().required(),
   description: yup.string().required(),
+});
+
+// Contact fields validation
+export const validateContact = yup.object({
+  title: yup.string().required(),
+  detail: yup.string().required(),
+  subDetail: yup.string().required(),
+  email: yup.string().email().required(),
 });
