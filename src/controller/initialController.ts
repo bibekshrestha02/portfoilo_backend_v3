@@ -2,13 +2,10 @@ import { Response, Request, NextFunction } from 'express';
 import ColorModel from '../model/colorModel';
 import UserModel from '../model/usersModel';
 import { validateName, validateProfileImagePath } from '../model/usersModel';
+import asyncHandler from 'express-async-handler';
 
-export async function getInital(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
+export const getInital = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     // Find the document
     const query = {},
       update = {
@@ -34,18 +31,11 @@ export async function getInital(
     let colors = await ColorModel.find({}).lean();
 
     res.json({ ...user, colors });
-  } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
   }
-}
+);
 
-export async function updateName(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
+export const updateName = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     await validateName.validate(req.body);
     const { name, title } = req.body;
     let result = await UserModel.findOneAndUpdate(
@@ -60,17 +50,11 @@ export async function updateName(
       .lean();
 
     res.status(200).json(result);
-  } catch (error) {
-    res.status(400).send(error);
   }
-}
+);
 
-export async function updateProfileImagePath(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
+export const updateProfileImagePath = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     await validateProfileImagePath.validate(req.body);
 
     let result = await UserModel.findOneAndUpdate(
@@ -81,7 +65,5 @@ export async function updateProfileImagePath(
       .select('profileImagePath')
       .lean();
     res.status(200).json(result);
-  } catch (error) {
-    res.status(400).send(error);
   }
-}
+);

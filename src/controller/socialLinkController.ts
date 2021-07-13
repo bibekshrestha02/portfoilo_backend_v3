@@ -4,13 +4,10 @@ import SocialLinkModel from '../model/socialLinkModel';
 import UsersModel from '../model/usersModel';
 import { isValidObjectId } from 'mongoose';
 import UserModel from '../model/usersModel';
+import asyncHandler from 'express-async-handler';
 
-export async function createSocialLink(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
+export const createSocialLink = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     await socialLinkValidationSchema.validate(req.body);
     const { name, link, iconPath } = req.body;
 
@@ -22,17 +19,11 @@ export async function createSocialLink(
       { $push: { socialLinks: socialLink._id } }
     );
     res.status(201).json(result);
-  } catch (error) {
-    res.status(400).send(error);
   }
-}
+);
 
-export async function updateSocialLink(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
+export const updateSocialLink = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     if (!isValidObjectId(req.params.id))
       return res.status(400).json({ field: 'id', message: 'Invalid Id' });
     let { id } = req.params;
@@ -53,17 +44,11 @@ export async function updateSocialLink(
     );
 
     res.status(200).json(result);
-  } catch (error) {
-    res.status(400).send(error);
   }
-}
+);
 
-export async function deleteSocialLink(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
+export const deleteSocialLink = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     if (!isValidObjectId(req.params.id))
       return res.status(400).json({ field: 'id', message: 'Invalid Id' });
     let { id } = req.params;
@@ -75,7 +60,5 @@ export async function deleteSocialLink(
     res.status(200).json({
       message: 'Successfully deleted',
     });
-  } catch (error) {
-    res.status(400).send(error);
   }
-}
+);
