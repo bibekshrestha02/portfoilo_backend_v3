@@ -3,7 +3,7 @@ import ColorModel from '../model/colorModel';
 import UserModel from '../model/usersModel';
 import { validateName, validateProfileImagePath } from '../model/usersModel';
 import asyncHandler from 'express-async-handler';
-
+import { getNameAndValue } from '../utils/getNameAndValue';
 export const getInital = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     // Find the document
@@ -29,7 +29,7 @@ export const getInital = asyncHandler(
       .populate('socialLinks')
       .lean();
     let colors = await ColorModel.find({}).lean();
-
+    colors = getNameAndValue(colors);
     res.json({ ...user, colors });
   }
 );
