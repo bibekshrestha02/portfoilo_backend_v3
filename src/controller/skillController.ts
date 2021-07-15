@@ -5,7 +5,15 @@ import asyncHandler from 'express-async-handler';
 import { validateSkill } from '../model/skillModel';
 import SkillModel from '../model/skillModel';
 import { isValidObjectId } from 'mongoose';
-
+export const getSkill = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await UserModel.findOne({})
+      .select('skill')
+      .populate('skill.data')
+      .lean();
+    res.status(200).json(result.skill);
+  }
+);
 export const editTitle = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     await validateTitle.validate(req.body);

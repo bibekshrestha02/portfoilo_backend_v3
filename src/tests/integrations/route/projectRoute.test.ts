@@ -17,6 +17,39 @@ describe('Project Route', () => {
   });
   afterAll(async () => connection.close());
 
+  describe('Get: api/v1/project/', () => {
+    let data = {
+      name: 'HTMl',
+      iconPath: 'https://fb.com',
+      link: 'https://fb.com',
+    };
+    beforeEach(async () => {
+      let project = new ProjectModel(data);
+
+      await UserModel.findOneAndUpdate(
+        {},
+        { $push: { 'project.data': project._id } }
+      );
+      await project.save();
+    });
+
+    const exec = () => request(app).get('/api/v1/project/');
+
+    it('should get title with data field with stauts 200', async () => {
+      const res = await exec();
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('title');
+      expect(res.body).toHaveProperty('data');
+    });
+
+    it('should populate field data of response', async () => {
+      const res = await exec();
+      expect(res.body.data).toEqual(
+        expect.arrayContaining([expect.objectContaining(data)])
+      );
+    });
+  });
+
   describe('Get: /api/v1/project/all', () => {
     const exec = () => request(app).get('/api/v1/project/all');
 

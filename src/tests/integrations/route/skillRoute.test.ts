@@ -16,7 +16,36 @@ describe('Skill Route', () => {
     await SkillModel.deleteMany({});
   });
   afterAll(async () => connection.close());
+  describe('Get: api/v1/skill/', () => {
+    let data = {
+      name: 'HTMl',
+      iconPath: 'https://fb.com',
+    };
+    beforeEach(async () => {
+      let skill = new SkillModel(data);
 
+      await UserModel.findOneAndUpdate(
+        {},
+        { $push: { 'skill.data': skill._id } }
+      );
+      await skill.save();
+    });
+    const exec = () => request(app).get('/api/v1/skill/');
+
+    it('should get title with data field with stauts 200', async () => {
+      const res = await exec();
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('title');
+      expect(res.body).toHaveProperty('data');
+    });
+
+    it('should populate field data of response', async () => {
+      const res = await exec();
+      expect(res.body.data).toEqual(
+        expect.arrayContaining([expect.objectContaining(data)])
+      );
+    });
+  });
   describe('PUT: /api/v1/skill/title', () => {
     let title: string;
     beforeEach(() => {

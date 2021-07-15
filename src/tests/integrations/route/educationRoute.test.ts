@@ -16,6 +16,38 @@ describe('Education Route', () => {
     await EducationModel.deleteMany({});
   });
   afterAll(async () => connection.close());
+  describe('Get: api/v1/education/', () => {
+    let data = {
+      name: 'Orchid',
+      place: 'Harion',
+      year: 2014,
+      branch: 'SEE',
+    };
+    beforeEach(async () => {
+      let education = new EducationModel(data);
+
+      await UserModel.findOneAndUpdate(
+        {},
+        { $push: { 'education.data': education._id } }
+      );
+      await education.save();
+    });
+    const exec = () => request(app).get('/api/v1/education/');
+
+    it('should get title with data field with stauts 200', async () => {
+      const res = await exec();
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('title');
+      expect(res.body).toHaveProperty('data');
+    });
+
+    it('should populate field data of response', async () => {
+      const res = await exec();
+      expect(res.body.data).toEqual(
+        expect.arrayContaining([expect.objectContaining(data)])
+      );
+    });
+  });
 
   describe('Get: /api/v1/education/all', () => {
     const exec = () => request(app).get('/api/v1/education/all');

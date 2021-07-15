@@ -5,6 +5,15 @@ import asyncHandler from 'express-async-handler';
 import EducationModel from '../model/educationModel';
 import { validateEducation } from '../model/educationModel';
 import { isValidObjectId } from 'mongoose';
+export const getEducation = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await UserModel.findOne({})
+      .select('education')
+      .populate('education.data')
+      .lean();
+    res.status(200).json(result.education);
+  }
+);
 
 export const editTitle = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

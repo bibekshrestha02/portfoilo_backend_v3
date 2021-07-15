@@ -5,6 +5,17 @@ import asyncHandler from 'express-async-handler';
 import ProjectModel from '../model/projectModel';
 import { validateProject } from '../model/projectModel';
 import { isValidObjectId } from 'mongoose';
+
+export const getProject = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await UserModel.findOne({})
+      .select('project')
+      .populate('project.data')
+      .lean();
+    res.status(200).json(result.project);
+  }
+);
+
 export const editTitle = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     await validateTitle.validate(req.body);

@@ -5,8 +5,10 @@ import {
   editEducation,
   editTitle,
   getAllEducation,
+  getEducation,
 } from '../controller/educationController';
 const Route = Router();
+Route.get('/', getEducation);
 Route.get('/all', getAllEducation);
 Route.put('/title', editTitle);
 Route.post('/', addEducation);
