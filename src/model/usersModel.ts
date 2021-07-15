@@ -1,5 +1,9 @@
 import { Schema, model } from 'mongoose';
 import socialLinkModel from './socialLinkModel';
+import educationModel from './educationModel';
+import projectModel from './projectModel';
+import skillModel from './skillModel';
+
 import * as yup from 'yup';
 const userSchema = new Schema({
   name: {
@@ -42,7 +46,7 @@ const userSchema = new Schema({
     },
     data: {
       type: [Schema.Types.ObjectId],
-      ref: 'Education',
+      ref: educationModel,
     },
   },
   project: {
@@ -52,7 +56,7 @@ const userSchema = new Schema({
     },
     data: {
       type: [Schema.Types.ObjectId],
-      ref: 'Project',
+      ref: projectModel,
     },
   },
   skill: {
@@ -62,7 +66,7 @@ const userSchema = new Schema({
     },
     data: {
       type: [Schema.Types.ObjectId],
-      ref: 'Skill',
+      ref: skillModel,
     },
   },
   contact: {
