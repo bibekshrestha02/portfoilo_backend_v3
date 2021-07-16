@@ -7,6 +7,8 @@ import educationRoute from '../route/educationRoute';
 import projectRoute from '../route/projectRoute';
 import skillRoute from '../route/skillRoute';
 import colorRoute from '../route/colorRoute';
+import authRoute from '../route/authRoute';
+
 const route = (app: Application) => {
   app.use('/api/v1', initalRoute);
   app.use('/api/v1/socialLink', socialLinkRoute);
@@ -16,6 +18,7 @@ const route = (app: Application) => {
   app.use('/api/v1/project', projectRoute);
   app.use('/api/v1/skill', skillRoute);
   app.use('/api/v1/color', colorRoute);
+  app.use('/api/v1/auth', authRoute);
 };
 
 export default route;
