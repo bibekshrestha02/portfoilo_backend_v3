@@ -8,11 +8,17 @@ describe('Education Route', () => {
   beforeAll(async () => {
     testRun();
   });
+  let token: string;
 
+  beforeEach(async () => {
+    let user = new UserModel({});
+    token = user.generateToken();
+    await user.save();
+  });
   beforeEach(async () => await UserModel.create({}));
 
   afterEach(async () => {
-    await UserModel.deleteOne({});
+    await UserModel.deleteMany({});
     await EducationModel.deleteMany({});
   });
   afterAll(async () => connection.close());
@@ -65,7 +71,10 @@ describe('Education Route', () => {
       title = 'educations';
     });
     const exec = () =>
-      request(app).put('/api/v1/education/title').send({ title });
+      request(app)
+        .put('/api/v1/education/title')
+        .send({ title })
+        .set({ 'x-auth-token': token });
 
     describe('Validate', () => {
       it('should return status 400 if title is not send', async () => {
@@ -94,7 +103,8 @@ describe('Education Route', () => {
     const exec = () =>
       request(app)
         .post('/api/v1/education')
-        .send({ name, place, year, branch });
+        .send({ name, place, year, branch })
+        .set({ 'x-auth-token': token });
 
     describe('Validate Fileds', () => {
       it('should return status 400 if name is not send', async () => {
@@ -161,7 +171,8 @@ describe('Education Route', () => {
     const exec = () =>
       request(app)
         .put(`/api/v1/education/${id}`)
-        .send({ name, place, year, branch });
+        .send({ name, place, year, branch })
+        .set({ 'x-auth-token': token });
 
     describe('Validate Id', () => {
       it('should return status 400 if id is invalid', async () => {
@@ -230,7 +241,10 @@ describe('Education Route', () => {
       id = education._id;
       await education.save();
     });
-    const exec = () => request(app).delete(`/api/v1/education/${id}`);
+    const exec = () =>
+      request(app)
+        .delete(`/api/v1/education/${id}`)
+        .set({ 'x-auth-token': token });
 
     describe('Validate Id', () => {
       it('should return status 400 if id is invalid', async () => {

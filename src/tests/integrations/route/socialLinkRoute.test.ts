@@ -9,6 +9,13 @@ describe('Route /api/v1/socialLink/', () => {
   beforeAll(async () => {
     await testRun();
   });
+  let token: string;
+
+  beforeEach(async () => {
+    let user = new UserModel({});
+    token = user.generateToken();
+    await user.save();
+  });
   afterAll(async () => {
     await connection.close();
   });
@@ -32,7 +39,8 @@ describe('Route /api/v1/socialLink/', () => {
     function exec() {
       return request(app)
         .post('/api/v1/socialLink')
-        .send({ name, iconPath, link });
+        .send({ name, iconPath, link })
+        .set({ 'x-auth-token': token });
     }
 
     describe('Validate field', () => {
@@ -98,7 +106,8 @@ describe('Route /api/v1/socialLink/', () => {
     function exec() {
       return request(app)
         .put(`/api/v1/socialLink/${id}`)
-        .send({ name, iconPath, link });
+        .send({ name, iconPath, link })
+        .set({ 'x-auth-token': token });
     }
 
     describe('Validate Id', () => {
@@ -169,7 +178,9 @@ describe('Route /api/v1/socialLink/', () => {
     });
 
     function exec() {
-      return request(app).delete(`/api/v1/socialLink/${id}`);
+      return request(app)
+        .delete(`/api/v1/socialLink/${id}`)
+        .set({ 'x-auth-token': token });
     }
 
     describe('Validate Id', () => {

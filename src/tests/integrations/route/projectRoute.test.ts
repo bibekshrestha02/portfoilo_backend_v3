@@ -8,11 +8,17 @@ describe('Project Route', () => {
   beforeAll(async () => {
     testRun();
   });
+  let token: string;
 
+  beforeEach(async () => {
+    let user = new UserModel({});
+    token = user.generateToken();
+    await user.save();
+  });
   beforeEach(async () => await UserModel.create({}));
 
   afterEach(async () => {
-    await UserModel.deleteOne({});
+    await UserModel.deleteMany({});
     await ProjectModel.deleteMany({});
   });
   afterAll(async () => connection.close());
@@ -66,7 +72,10 @@ describe('Project Route', () => {
       title = 'Projects';
     });
     const exec = () =>
-      request(app).put('/api/v1/project/title').send({ title });
+      request(app)
+        .put('/api/v1/project/title')
+        .send({ title })
+        .set({ 'x-auth-token': token });
 
     describe('Validate', () => {
       it('should return status 400 if title is not send', async () => {
@@ -92,7 +101,10 @@ describe('Project Route', () => {
       link = 'https://fb.com';
     });
     const exec = () =>
-      request(app).post('/api/v1/project').send({ name, iconPath, link });
+      request(app)
+        .post('/api/v1/project')
+        .send({ name, iconPath, link })
+        .set({ 'x-auth-token': token });
 
     describe('Validate Fileds', () => {
       it('should return status 400 if name is not send', async () => {
@@ -149,7 +161,10 @@ describe('Project Route', () => {
       await project.save();
     });
     const exec = () =>
-      request(app).put(`/api/v1/project/${id}`).send({ name, iconPath, link });
+      request(app)
+        .put(`/api/v1/project/${id}`)
+        .send({ name, iconPath, link })
+        .set({ 'x-auth-token': token });
 
     describe('Validate Id', () => {
       it('should return status 400 if id is invalid', async () => {
@@ -211,7 +226,10 @@ describe('Project Route', () => {
       await project.save();
     });
 
-    const exec = () => request(app).delete(`/api/v1/project/${id}`);
+    const exec = () =>
+      request(app)
+        .delete(`/api/v1/project/${id}`)
+        .set({ 'x-auth-token': token });
 
     describe('Validate Id', () => {
       it('should return status 400 if id is invalid', async () => {

@@ -8,11 +8,17 @@ describe('Skill Route', () => {
   beforeAll(async () => {
     testRun();
   });
+  let token: string;
 
+  beforeEach(async () => {
+    let user = new UserModel({});
+    token = user.generateToken();
+    await user.save();
+  });
   beforeEach(async () => await UserModel.create({}));
 
   afterEach(async () => {
-    await UserModel.deleteOne({});
+    await UserModel.deleteMany({});
     await SkillModel.deleteMany({});
   });
   afterAll(async () => connection.close());
@@ -30,7 +36,8 @@ describe('Skill Route', () => {
       );
       await skill.save();
     });
-    const exec = () => request(app).get('/api/v1/skill/');
+    const exec = () =>
+      request(app).get('/api/v1/skill/').set({ 'x-auth-token': token });
 
     it('should get title with data field with stauts 200', async () => {
       const res = await exec();
@@ -51,7 +58,11 @@ describe('Skill Route', () => {
     beforeEach(() => {
       title = 'Skills';
     });
-    const exec = () => request(app).put('/api/v1/skill/title').send({ title });
+    const exec = () =>
+      request(app)
+        .put('/api/v1/skill/title')
+        .send({ title })
+        .set({ 'x-auth-token': token });
 
     describe('Validate', () => {
       it('should return status 400 if title is not send', async () => {
@@ -86,7 +97,10 @@ describe('Skill Route', () => {
       iconPath = 'https://fb.com';
     });
     const exec = () =>
-      request(app).post('/api/v1/skill').send({ name, iconPath });
+      request(app)
+        .post('/api/v1/skill')
+        .send({ name, iconPath })
+        .set({ 'x-auth-token': token });
 
     describe('Validate Fileds', () => {
       it('should return status 400 if name is not send', async () => {
@@ -135,7 +149,10 @@ describe('Skill Route', () => {
       await skill.save();
     });
     const exec = () =>
-      request(app).put(`/api/v1/skill/${id}`).send({ name, iconPath });
+      request(app)
+        .put(`/api/v1/skill/${id}`)
+        .send({ name, iconPath })
+        .set({ 'x-auth-token': token });
 
     describe('Validate Id', () => {
       it('should return status 400 if id is invalid', async () => {
@@ -189,7 +206,8 @@ describe('Skill Route', () => {
       await skill.save();
     });
 
-    const exec = () => request(app).delete(`/api/v1/skill/${id}`);
+    const exec = () =>
+      request(app).delete(`/api/v1/skill/${id}`).set({ 'x-auth-token': token });
 
     describe('Validate Id', () => {
       it('should return status 400 if id is invalid', async () => {

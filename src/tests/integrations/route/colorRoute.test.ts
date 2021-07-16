@@ -3,14 +3,24 @@ import app from '../../../app';
 import { testRun } from '../../../startup/db';
 import { connection } from 'mongoose';
 import colorModel from '../../../model/colorModel';
+import UserModel from '../../../model/usersModel';
+
 describe('Route: /api/v1/color/', () => {
   beforeAll(async () => {
     await testRun();
+  });
+  let token: string;
+
+  beforeEach(async () => {
+    let user = new UserModel({});
+    token = user.generateToken();
+    await user.save();
   });
   afterAll(async () => {
     await connection.close();
   });
   afterEach(async () => {
+    await UserModel.deleteMany({});
     await colorModel.deleteMany({});
   });
 
@@ -21,7 +31,10 @@ describe('Route: /api/v1/color/', () => {
       value = '#f1f1f1';
     });
     const exec = () =>
-      request(app).post('/api/v1/color/').send({ name, value });
+      request(app)
+        .post('/api/v1/color/')
+        .send({ name, value })
+        .set({ 'x-auth-token': token });
 
     describe('Validate Fields', () => {
       it('should return status 400 if name is not send', async () => {
@@ -74,7 +87,10 @@ describe('Route: /api/v1/color/', () => {
       await colorModel.create({ name, value });
       await colorModel.create({ name: 'secondary', value });
     });
-    const exec = () => request(app).delete(`/api/v1/color/${name}`);
+    const exec = () =>
+      request(app)
+        .delete(`/api/v1/color/${name}`)
+        .set({ 'x-auth-token': token });
 
     it('should return status 400 if name is invalid', async () => {
       name = 'sdfsad';
@@ -99,7 +115,10 @@ describe('Route: /api/v1/color/', () => {
       await colorModel.create({ name, value });
     });
     const exec = () =>
-      request(app).put(`/api/v1/color/${name}`).send({ value });
+      request(app)
+        .put(`/api/v1/color/${name}`)
+        .send({ value })
+        .set({ 'x-auth-token': token });
     describe('Validate Fiels', () => {
       it('should return status 400 if name is invalid', async () => {
         name = 'sdfsad';

@@ -8,6 +8,13 @@ describe('Inital Route: /api/v1/', () => {
   beforeAll(() => {
     testRun();
   });
+  let token: string;
+
+  beforeEach(async () => {
+    let user = new UserModel({});
+    token = user.generateToken();
+    await user.save();
+  });
   afterEach(async () => {
     await UserModel.deleteMany({});
     await SocialLinkModel.deleteMany({});
@@ -19,6 +26,7 @@ describe('Inital Route: /api/v1/', () => {
     const exec = () => {
       return Request(app).get('/api/v1/');
     };
+    beforeEach(async () => await UserModel.deleteMany({}));
 
     it('should create User Model if its not exist', async () => {
       await exec();
@@ -80,7 +88,10 @@ describe('Inital Route: /api/v1/', () => {
       title = 'MERN Stack Developer';
     });
     function exec() {
-      return Request(app).put('/api/v1/name').send({ name, title });
+      return Request(app)
+        .put('/api/v1/name')
+        .send({ name, title })
+        .set({ 'x-auth-token': token });
     }
     describe('validate name and tile', () => {
       it('should return status 400 if name  is not send', async () => {
@@ -115,7 +126,8 @@ describe('Inital Route: /api/v1/', () => {
     function exec() {
       return Request(app)
         .put('/api/v1/profileImage')
-        .send({ profileImagePath });
+        .send({ profileImagePath })
+        .set({ 'x-auth-token': token });
     }
     describe('Validate ProfileImagePath', () => {
       it('should return status 400 if profileImagePath  is not send', async () => {

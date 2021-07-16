@@ -7,10 +7,16 @@ describe('Contact Route', () => {
   beforeAll(async () => {
     testRun();
   });
+  let token: string;
 
+  beforeEach(async () => {
+    let user = new UserModel({});
+    token = user.generateToken();
+    await user.save();
+  });
   beforeEach(async () => await UserModel.create({}));
 
-  afterEach(async () => await UserModel.deleteOne({}));
+  afterEach(async () => await UserModel.deleteMany({}));
   afterAll(async () => connection.close());
 
   describe('PUT: /api/v1/contact', () => {
@@ -25,7 +31,8 @@ describe('Contact Route', () => {
     const exec = () =>
       request(app)
         .put('/api/v1/contact')
-        .send({ title, detail, subDetail, email });
+        .send({ title, detail, subDetail, email })
+        .set({ 'x-auth-token': token });
 
     describe('Validate Inputs', () => {
       it('should return status 400 if title is not send', async () => {

@@ -7,10 +7,15 @@ describe('About Route', () => {
   beforeAll(async () => {
     testRun();
   });
+  let token: string;
 
-  beforeEach(async () => await UserModel.create({}));
+  beforeEach(async () => {
+    let user = new UserModel({});
+    token = user.generateToken();
+    await user.save();
+  });
 
-  afterEach(async () => await UserModel.deleteOne({}));
+  afterEach(async () => await UserModel.deleteMany({}));
   afterAll(async () => connection.close());
 
   describe('PUT: /api/v1/about', () => {
@@ -25,7 +30,8 @@ describe('About Route', () => {
     const exec = () =>
       request(app)
         .put('/api/v1/about')
-        .send({ title, subTitle, cvPath, description });
+        .send({ title, subTitle, cvPath, description })
+        .set({ 'x-auth-token': token });
 
     describe('Validate Inputs', () => {
       it('should return status 400 if title is not send', async () => {
