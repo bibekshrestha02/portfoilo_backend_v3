@@ -3,7 +3,7 @@ import socialLinkModel from './socialLinkModel';
 import educationModel from './educationModel';
 import projectModel from './projectModel';
 import skillModel from './skillModel';
-
+import jwt from 'jsonwebtoken';
 import * as yup from 'yup';
 const userSchema = new Schema({
   name: {
@@ -96,6 +96,10 @@ const userSchema = new Schema({
     ref: socialLinkModel,
   },
 });
+
+userSchema.methods.generateToken = function () {
+  return jwt.sign({ _id: this._id }, process.env.JWT_SECRET as string);
+};
 
 const UserModel = model('User', userSchema);
 
