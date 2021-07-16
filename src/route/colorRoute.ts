@@ -5,11 +5,12 @@ import {
   getColors,
   updateColors,
 } from '../controller/colorController';
+import verifyToken from '../middleware/verifyTokenMiddleware';
 
 const Route = Router();
 Route.get('/', getColors);
-Route.post('/', createColor);
-Route.put('/:name', updateColors);
-Route.delete('/:name', deleteColor);
+Route.post('/', [verifyToken, createColor]);
+Route.put('/:name', [verifyToken, updateColors]);
+Route.delete('/:name', [verifyToken, deleteColor]);
 
 export default Route;

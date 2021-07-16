@@ -4,9 +4,10 @@ import {
   updateName,
   updateProfileImagePath,
 } from '../controller/initialController';
+import verifyToken from '../middleware/verifyTokenMiddleware';
 const Route = Router();
 Route.get('/', getInital);
-Route.put('/name', updateName);
-Route.put('/profileImage', updateProfileImagePath);
+Route.put('/name', [verifyToken, updateName]);
+Route.put('/profileImage', [verifyToken, updateProfileImagePath]);
 
 export default Route;

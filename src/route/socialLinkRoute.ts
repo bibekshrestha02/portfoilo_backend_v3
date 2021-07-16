@@ -4,10 +4,12 @@ import {
   updateSocialLink,
   deleteSocialLink,
 } from '../controller/socialLinkController';
+import verifyToken from '../middleware/verifyTokenMiddleware';
+
 const Route = Router();
 
-Route.post('/', createSocialLink);
-Route.put('/:id', updateSocialLink);
-Route.delete('/:id', deleteSocialLink);
+Route.post('/', [verifyToken, createSocialLink]);
+Route.put('/:id', [verifyToken, updateSocialLink]);
+Route.delete('/:id', [verifyToken, deleteSocialLink]);
 
 export default Route;
