@@ -4,7 +4,7 @@ import verifyToken from '../middleware/verifyTokenMiddleware';
 
 const Route = Router();
 
-Route.get('/', [verifyToken, getContact]);
+Route.get('/', getContact);
 
 Route.put('/', [verifyToken, editContact]);
 
