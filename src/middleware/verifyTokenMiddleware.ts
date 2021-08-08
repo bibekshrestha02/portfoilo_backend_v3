@@ -6,7 +6,7 @@ const verfiyToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.headers['x-auth-token'];
     if (!token) {
-      res.status(403).json({
+      return res.status(403).json({
         message: 'who you are? hmm🙄',
       });
     }
@@ -18,7 +18,7 @@ const verfiyToken = async (req: Request, res: Response, next: NextFunction) => {
 
     let result = await UserModel.findById(decoded._id);
     if (!result) {
-      res.status(400).json({
+      return res.status(400).json({
         message: 'invalid token',
       });
     }
